@@ -176,6 +176,40 @@ public class PixImage {
    * @param numIterations the number of iterations of box blurring.
    * @return a blurred version of "this" PixImage.
    */
+  
+  private static short findMedian(short[] a){
+    Quicksort object = new Quicksort();
+    object.sort(a);
+    a = object.numbers;
+    int n = a.length;
+    if (a.length % 2 == 0){
+      return (a[n/2] + a[(n/2)-1]) / 2;
+    } else{
+      return (a[(n-1)/2]);
+    }
+  }
+
+  private PixImage medianFilterSing(){
+    int copyImageHieght = this.getHeight();
+    int copyImageWidth = this.getWidth();
+    PixImage copyImage = new PixImage(copyImageWidth,copyImageHieght);
+    for (int heightIndex = 0; heightIndex < this.getHeight(); heightIndex++){
+      for(int widthIndex = 0; widthIndex < this.getWidth(); widthIndex++){
+        short[][] neighborhood = getNeighbors(this,heightIndex,widthIndex);
+        short[] redNeighbors = getRedNeighbors(this,heightIndex, widthIndex);
+        short[] greenNeighbors = getGreenNeighbors(this,heightIndex,widthIndex);
+        short[] blueNeighbors = getBlueNeighbors(this,heightIndex,widthIndex);
+        short redValMedian = findMedian(redNeighbors);
+        short greenValMedian = findMedian(greenNeighbors);
+        short blueValMedian = findMedian(blueNeighbors);
+        copyImage.setPixel(widthIndex,heightIndex,redValMedian,greenValMedian,blueValMedian);
+      }
+    }
+    return copyImage;
+  }
+
+  public PixImage medianFilter()
+
   private PixImage boxBlurSingle() {
     int copyImageHieght = this.getHeight();
     int copyImageWidth = this.getWidth();
